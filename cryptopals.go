@@ -63,6 +63,12 @@ func main() {
 			fmt.Printf("Cipher:\t\t%s\n", cipher)
 			fmt.Printf("Plaintext:\t%s\n", plaintext)
 			fmt.Printf("Score:\t\t%d\n", score)
+		case 4:
+			fmt.Println(" - Challenge 4 ###")
+			score, cipher, plaintext := set1.DetectSingleCharXOR("set1/challenge4-data.txt")
+			fmt.Printf("Cipher:\t\t%s\n", cipher)
+			fmt.Printf("Plaintext:\t%s", plaintext)
+			fmt.Printf("Score:\t\t%d\n", score)
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
