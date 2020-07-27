@@ -69,6 +69,17 @@ func main() {
 			fmt.Printf("Cipher:\t\t%s\n", cipher)
 			fmt.Printf("Plaintext:\t%s", plaintext)
 			fmt.Printf("Score:\t\t%d\n", score)
+		case 5:
+			fmt.Println(" - Challenge 5 ###")
+			key := "ICE"
+			plaintext := "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+			expected := "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+			cipher := set1.RepeatingXORString(key, plaintext)
+			fmt.Printf("Plaintext:\t\n----------\n%s\n-----------\n", plaintext)
+			fmt.Printf("Key:\t\t%s\n", key)
+			fmt.Printf("Cipher:\t\t%s\n", cipher)
+			fmt.Printf("Expected:\t%s\n", expected)
+			fmt.Printf("Cipher == Expected:\t%t	\n", expected == cipher)
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)

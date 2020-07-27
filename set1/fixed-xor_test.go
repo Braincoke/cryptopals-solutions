@@ -4,6 +4,9 @@ import "testing"
 
 func byteArraysEqual(a []byte, b []byte) bool {
 	// Test the equality
+	if len(a) != len(b) {
+		return false
+	}
 	equal := true
 	for i := 0; i < len(a); i++ {
 		if a[i] != b[i] {
