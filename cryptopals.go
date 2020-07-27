@@ -45,6 +45,17 @@ func main() {
 			fmt.Printf("Base64 conversion:\t%s\n", string(base64))
 			fmt.Printf("Expected base64:\t%s\n", expected)
 			fmt.Printf("Result == Expected:\t%t	\n", expected == string(base64))
+		case 2:
+			fmt.Println(" - Challenge 2 ###")
+			var a = "1c0111001f010100061a024b53535009181c"
+			var b = "686974207468652062756c6c277320657965"
+			var expected = "746865206b696420646f6e277420706c6179"
+			ans, _ := set1.XORHex(a, b)
+			fmt.Printf("a:\t\t%s\n", a)
+			fmt.Printf("b:\t\t%s\n", b)
+			fmt.Printf("a ^ b:\t\t%s\n", ans)
+			fmt.Printf("expected:\t%s\n", expected)
+			fmt.Printf("Result == Expected:\t%t\n", expected == ans)
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
