@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cryptopals/set1"
 	"fmt"
 	"os"
 	"strconv"
@@ -37,6 +38,13 @@ func main() {
 		switch challengeToRun {
 		case 1:
 			fmt.Println(" - Challenge 1 ###")
+			testString := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
+			expected := "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
+			base64 := set1.HexToBase64(testString)
+			fmt.Printf("Test string:\t\t%s\n", testString)
+			fmt.Printf("Base64 conversion:\t%s\n", string(base64))
+			fmt.Printf("Expected base64:\t%s\n", expected)
+			fmt.Printf("Result == Expected:\t%t	\n", expected == string(base64))
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
