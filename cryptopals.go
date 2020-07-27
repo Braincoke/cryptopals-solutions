@@ -56,6 +56,13 @@ func main() {
 			fmt.Printf("a ^ b:\t\t%s\n", ans)
 			fmt.Printf("expected:\t%s\n", expected)
 			fmt.Printf("Result == Expected:\t%t\n", expected == ans)
+		case 3:
+			fmt.Println(" - Challenge 3 ###")
+			cipher := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+			score, plaintext := set1.SingleByteXorCrack(cipher)
+			fmt.Printf("Cipher:\t\t%s\n", cipher)
+			fmt.Printf("Plaintext:\t%s\n", plaintext)
+			fmt.Printf("Score:\t\t%d\n", score)
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
