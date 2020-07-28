@@ -10,11 +10,11 @@ import (
  * https://cryptopals.com/sets/1/challenges/3
  */
 
-// SingleByteXorCrack tries to decrypt a cipher xor'd against a single character
-func SingleByteXorCrack(s string) (int, string) {
+// SingleByteXorCrackFromByte tries to decrypt a cipher xor'd against a single character
+func SingleByteXorCrackFromByte(cipher []byte) (bestScore int, bestKey byte, plaintext string) {
 
-	cipher, _ := hex.DecodeString(s)
-	bestScore := -1
+	bestScore = -1
+	bestKey = 0
 	var probablePlaintext []byte
 
 	// Brute force the key
@@ -32,10 +32,18 @@ func SingleByteXorCrack(s string) (int, string) {
 		if score > bestScore {
 			bestScore = score
 			probablePlaintext = plaintext
+			bestKey = i
 		}
 
 	}
-	return bestScore, string(probablePlaintext)
+	return bestScore, bestKey, string(probablePlaintext)
+}
+
+// SingleByteXorCrack tries to decrypt a cipher xor'd against a single character
+func SingleByteXorCrack(s string) (bestScore int, plaintext string) {
+	cipher, _ := hex.DecodeString(s)
+	bestScore, _, plaintext = SingleByteXorCrackFromByte(cipher)
+	return bestScore, plaintext
 }
 
 // IndexOf find the index of a byte in a byte array
