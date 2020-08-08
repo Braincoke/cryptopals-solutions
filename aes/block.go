@@ -18,8 +18,19 @@ func subword(word uint32) (output uint32) {
 	return binary.BigEndian.Uint32(s)
 }
 
+// invSubword applies the AES inverse S-box to a 4-byte word
+func invSubword(word uint32) (output uint32) {
+	s := make([]byte, 4)
+	wb := make([]byte, 4)
+	binary.BigEndian.PutUint32(wb, word)
+	for i := 0; i < 4; i++ {
+		s[i] = sboxInverse[wb[i]]
+	}
+	return binary.BigEndian.Uint32(s)
+}
+
 // keyExpansion implements the AES key schedule
-func keyExpansion(Nk int, Nr int, key []uint32) (subkeys []uint32) {
+func keyExpansion(Nk int, Nr int, key []uint32) (encKeys [][]uint32, decKeys [][]uint32) {
 	w := make([]uint32, 4*(Nr+1))
 	i := 0
 	for i < Nk {
@@ -38,7 +49,29 @@ func keyExpansion(Nk int, Nr int, key []uint32) (subkeys []uint32) {
 		w[i] = w[i-Nk] ^ temp
 		i++
 	}
-	return w
+
+	// Split the keys by round
+	Nb := 4
+	encKeys = make([][]uint32, (Nr + 1))
+	decKeys = make([][]uint32, (Nr + 1))
+	for i := 0; i <= Nr; i++ {
+		encKeys[i] = make([]uint32, Nb)
+		decKeys[i] = make([]uint32, Nb)
+	}
+	round := 0
+	for index, keyByte := range w {
+		encKeys[round][index%Nb] = keyByte
+		decKeys[round][index%Nb] = keyByte
+		if (index+1)%Nb == 0 {
+			round++
+		}
+	}
+
+	// Decryption keys for the equivalent inverse cipher
+	for i := 1; i < Nr; i++ {
+		decKeys[i] = invMixColumns(decKeys[i])
+	}
+	return encKeys, decKeys
 }
 
 // subBytes applies the S-box on each byte of the state
@@ -51,6 +84,16 @@ func subBytes(state []uint32) []uint32 {
 	return output
 }
 
+// invSubBytes applies the inverse S-box on each byte of the state
+// Here the state is represented as an array of columns
+func invSubBytes(state []uint32) []uint32 {
+	output := make([]uint32, len(state))
+	for i := 0; i < len(state); i++ {
+		output[i] = invSubword(state[i])
+	}
+	return output
+}
+
 // shiftRows applies a rotation each row of the state
 // Here the state is represented as an array of columns
 func shiftRows(state []uint32) []uint32 {
@@ -58,6 +101,18 @@ func shiftRows(state []uint32) []uint32 {
 	for i := 0; i < len(state); i++ {
 		highBits := stateRows[i] << (i * 8)
 		lowBits := stateRows[i] >> ((len(state) - i) * 8)
+		stateRows[i] = highBits | lowBits
+	}
+	return rowsToColumns(stateRows)
+}
+
+// invShiftRows applies a rotation each row of the state
+// Here the state is represented as an array of columns
+func invShiftRows(state []uint32) []uint32 {
+	stateRows := columnsToRows(state)
+	for i := 0; i < len(state); i++ {
+		highBits := stateRows[i] >> (i * 8)
+		lowBits := stateRows[i] << ((len(state) - i) * 8)
 		stateRows[i] = highBits | lowBits
 	}
 	return rowsToColumns(stateRows)
@@ -141,6 +196,25 @@ func mixColumns(state []uint32) []uint32 {
 	return newState
 }
 
+// invMixColumns as defined in FIPS-197
+func invMixColumns(state []uint32) []uint32 {
+	var e byte = 0x0e
+	var b byte = 0x0b
+	var d byte = 0x0d
+	var n byte = 0x09
+	newState := make([]uint32, len(state))
+	for c := 0; c < len(state); c++ {
+		s := make([]byte, 4)
+		binary.BigEndian.PutUint32(s, state[c])
+		b0 := mul(e, s[0]) ^ mul(b, s[1]) ^ mul(d, s[2]) ^ mul(n, s[3])
+		b1 := mul(n, s[0]) ^ mul(e, s[1]) ^ mul(b, s[2]) ^ mul(d, s[3])
+		b2 := mul(d, s[0]) ^ mul(n, s[1]) ^ mul(e, s[2]) ^ mul(b, s[3])
+		b3 := mul(b, s[0]) ^ mul(d, s[1]) ^ mul(n, s[2]) ^ mul(e, s[3])
+		newState[c] = binary.BigEndian.Uint32([]byte{b0, b1, b2, b3})
+	}
+	return newState
+}
+
 // addRoundKey XOR the state with the round key
 func addRoundKey(state []uint32, key []uint32) []uint32 {
 	out := make([]uint32, len(state))
@@ -155,29 +229,37 @@ func addRoundKey(state []uint32, key []uint32) []uint32 {
 // there are better implementations in terms of speed and readability
 // Check out https://golang.org/src/crypto/aes/block.go
 func encryptBlock(plaintext []uint32, key []uint32, Nk int, Nr int) []uint32 {
-	Nb := 4
-	roundKeys := make([][]uint32, (Nr + 1))
-	for i := 0; i <= Nr; i++ {
-		roundKeys[i] = make([]uint32, Nb)
-	}
-	round := 0
-	subkeys := keyExpansion(Nk, Nr, key)
-	for index, keyByte := range subkeys {
-		roundKeys[round][index%Nb] = keyByte
-		if (index+1)%Nb == 0 {
-			round++
-		}
-	}
+	roundKeys, _ := keyExpansion(Nk, Nr, key)
 
 	// Init
 	state := plaintext
 	// Round 0
 	state = addRoundKey(roundKeys[0], state)
 	// Round 1 to (Nr-1)
-	for round = 1; round < Nr; round++ {
+	for round := 1; round < Nr; round++ {
 		state = addRoundKey(mixColumns(shiftRows(subBytes(state))), roundKeys[round])
 	}
 	// Round Nr
-	state = addRoundKey(shiftRows(subBytes(state)), roundKeys[round])
+	state = addRoundKey(shiftRows(subBytes(state)), roundKeys[Nr])
+	return state
+}
+
+// decryptBlock decrypts a 128-bit block with the AES algorithm
+// This implementation is as close to the specification as possible but
+// there are better implementations in terms of speed and readability
+// Check out https://golang.org/src/crypto/aes/block.go
+func decryptBlock(ciphertext []uint32, key []uint32, Nk int, Nr int) []uint32 {
+	_, roundKeys := keyExpansion(Nk, Nr, key)
+
+	// Init
+	state := ciphertext
+	// Round Nr
+	state = addRoundKey(roundKeys[Nr], state)
+	// Round Nr-1 to 1
+	for round := (Nr - 1); round > 0; round-- {
+		state = addRoundKey(invMixColumns(invShiftRows(invSubBytes(state))), roundKeys[round])
+	}
+	// Round 0
+	state = addRoundKey(invShiftRows(invSubBytes(state)), roundKeys[0])
 	return state
 }
