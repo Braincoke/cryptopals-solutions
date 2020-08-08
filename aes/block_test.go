@@ -1,4 +1,4 @@
-package set1
+package aes
 
 import (
 	"fmt"
@@ -739,7 +739,7 @@ func TestDecryptBlock(t *testing.T) {
 		},
 	}
 	for i := 0; i < len(ciphertext); i++ {
-		out := decryptBlock(ciphertext[i], keys[i], 4, 10)
+		out := DecryptBlock(ciphertext[i], keys[i], 4, 10)
 		if !uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("DecryptBlock expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}

@@ -1,4 +1,4 @@
-package set1
+package aes
 
 import "encoding/binary"
 
@@ -244,11 +244,11 @@ func encryptBlock(plaintext []uint32, key []uint32, Nk int, Nr int) []uint32 {
 	return state
 }
 
-// decryptBlock decrypts a 128-bit block with the AES algorithm
+// DecryptBlock decrypts a 128-bit block with the AES algorithm
 // This implementation is as close to the specification as possible but
 // there are better implementations in terms of speed and readability
 // Check out https://golang.org/src/crypto/aes/block.go
-func decryptBlock(ciphertext []uint32, key []uint32, Nk int, Nr int) []uint32 {
+func DecryptBlock(ciphertext []uint32, key []uint32, Nk int, Nr int) []uint32 {
 	_, roundKeys := keyExpansion(Nk, Nr, key)
 
 	// Init

@@ -1,4 +1,4 @@
-package set1
+package aes
 
 // https://en.wikipedia.org/wiki/Rijndael_S-box
 var sboxForward = [256]byte{
