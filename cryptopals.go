@@ -80,6 +80,14 @@ func main() {
 			fmt.Printf("Cipher:\t\t%s\n", cipher)
 			fmt.Printf("Expected:\t%s\n", expected)
 			fmt.Printf("Cipher == Expected:\t%t	\n", expected == cipher)
+		case 6:
+			fmt.Println(" - Challenge 6 ###")
+			filename := "set1/challenge6-data.txt"
+			data, _ := set1.ReadBase64File(filename)
+			key, plaintext := set1.BreakRepeatingKeyXOR(data)
+			fmt.Printf("Key:\t%s\n", string(key))
+			fmt.Println("--------------------------------------------")
+			fmt.Print(string(plaintext))
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
