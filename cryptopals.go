@@ -116,6 +116,22 @@ func main() {
 				}
 			}
 			fmt.Print(string(plaintextBytes))
+		case 8:
+			fmt.Println(" - Challenge 8 ###")
+			lines, _ := set1.ReadFileLines("set1/challenge8-data.txt")
+			detected := 0
+			cipherlines := make([]string, 1)
+			for _, line := range lines {
+				isECB, _ := set1.DetectECB([]byte(line))
+				if isECB {
+					detected++
+					cipherlines = append(cipherlines, line)
+				}
+			}
+			fmt.Printf("Detected %d lines using ECB\n", detected)
+			for _, cipher := range cipherlines {
+				fmt.Println(cipher)
+			}
 		default:
 			fmt.Println(" - Unknown challenge number !!!")
 			os.Exit(5)
