@@ -93,13 +93,13 @@ func main() {
 		data, _ := set1.ReadBase64File(filename)
 		ciphertext := make([]uint32, len(data)/Nb) // Special case where len(data) divisible by 4
 		for i := 0; i < len(ciphertext); i++ {
-			ciphertext[i] = binary.BigEndian.Uint32([]byte{data[i*Nb], data[i*Nb+1], data[i*Nb+2], data[i*Nb+3]})
+			ciphertext[i] = binary.BigEndian.Uint32(data[i*Nb : i*Nb+4])
 		}
 		// Set up the key
 		keyBytes := []byte("YELLOW SUBMARINE")
 		key := make([]uint32, Nb)
 		for i := 0; i < Nb; i++ {
-			key[i] = binary.BigEndian.Uint32([]byte{keyBytes[i*Nb], keyBytes[i*Nb+1], keyBytes[i*Nb+2], keyBytes[i*Nb+3]})
+			key[i] = binary.BigEndian.Uint32(keyBytes[i*Nb : i*Nb+4])
 		}
 		// Decrypt
 		plaintext := set1.ECBDecrypt(ciphertext, key, 4, 10)
