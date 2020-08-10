@@ -1,41 +1,10 @@
 package set1
 
 import (
-	"fmt"
+	. "cryptopals/utils"
 	"strings"
 	"testing"
 )
-
-func Slices2DToString(a [][]byte) string {
-	var result strings.Builder
-	result.WriteRune('[')
-	for _, subA := range a {
-		result.WriteString(fmt.Sprintf(" {"))
-		for _, e := range subA {
-			result.WriteString(fmt.Sprintf("%d,", e))
-		}
-		result.WriteString(fmt.Sprintf("},"))
-	}
-	result.WriteRune(']')
-	return result.String()
-}
-
-func Slices2DEqual(a [][]byte, b [][]byte) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, subA := range a {
-		if len(b[i]) != len(subA) {
-			return false
-		}
-		for index, elementA := range subA {
-			if b[i][index] != elementA {
-				return false
-			}
-		}
-	}
-	return true
-}
 
 // TestReadB64File reads a base64 file and decodes it
 func TestReadB64File(t *testing.T) {

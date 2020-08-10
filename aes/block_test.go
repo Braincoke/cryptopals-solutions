@@ -1,53 +1,10 @@
 package aes
 
 import (
-	"fmt"
-	"strings"
+	. "cryptopals/utils"
 	"testing"
 )
 
-func uint32SlicesEqual(a []uint32, b []uint32) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func uint32MatrixEqual(a [][]uint32, b [][]uint32) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := 0; i < len(a); i++ {
-		if !uint32SlicesEqual(a[i], b[i]) {
-			return false
-		}
-	}
-	return true
-}
-
-func Uint32SliceToString(a []uint32) string {
-	var result strings.Builder
-	result.WriteRune('{')
-	for i := 0; i < len(a); i++ {
-		result.WriteString(fmt.Sprintf(" %08x,", a[i]))
-	}
-	result.WriteRune('}')
-	return result.String()
-}
-
-func uint32MatrixToString(a [][]uint32) string {
-	var result strings.Builder
-	for i := 0; i < len(a); i++ {
-		result.WriteString(Uint32SliceToString(a[i]))
-		result.WriteRune('\n')
-	}
-	return result.String()
-}
 func TestSubword(t *testing.T) {
 	var word uint32 = 0xcf4f3c09
 	var result uint32 = subword(word)
@@ -84,7 +41,7 @@ func TestKeyExpansionAES128(t *testing.T) {
 		{0x549932d1, 0xf0855768, 0x1093ed9c, 0xbe2c974e},
 		{0x13111d7f, 0xe3944a17, 0xf307a78b, 0x4d2b30c5},
 	}
-	if !uint32MatrixEqual(expectedEncKeys, encKeys) {
+	if !Uint32MatrixEqual(expectedEncKeys, encKeys) {
 		t.Error("Key expansion algorithm failed for encryption keys")
 	}
 	expectedDecKeys := [][]uint32{
@@ -100,9 +57,9 @@ func TestKeyExpansionAES128(t *testing.T) {
 		{0x13aa29be, 0x9c8faff6, 0xf770f580, 0x00f7bf03},
 		{0x13111d7f, 0xe3944a17, 0xf307a78b, 0x4d2b30c5},
 	}
-	if !uint32MatrixEqual(expectedDecKeys, decKeys) {
+	if !Uint32MatrixEqual(expectedDecKeys, decKeys) {
 		t.Error("Key expansion algorithm failed for decryption keys")
-		t.Errorf("Expected \n%s\n but got\n %s", uint32MatrixToString(expectedDecKeys), uint32MatrixToString(decKeys))
+		t.Errorf("Expected \n%s\n but got\n %s", Uint32MatrixToString(expectedDecKeys), Uint32MatrixToString(decKeys))
 	}
 }
 
@@ -126,7 +83,7 @@ func TestKeyExpansionAES192(t *testing.T) {
 		{0xca400538, 0x8fcc5006, 0x282d166a, 0xbc3ce7b5},
 		{0xe98ba06f, 0x448c773c, 0x8ecc7204, 0x01002202},
 	}
-	if !uint32MatrixEqual(expected, subkeys) {
+	if !Uint32MatrixEqual(expected, subkeys) {
 		t.Error("Key expansion algorithm failed")
 	}
 }
@@ -162,8 +119,8 @@ func TestKeyExpansionAES256(t *testing.T) {
 		{0xcafaaae3, 0xe4d59b34, 0x9adf6ace, 0xbd10190d},
 		{0xfe4890d1, 0xe6188d0b, 0x046df344, 0x706c631e},
 	}
-	if !uint32MatrixEqual(expected, subkeys) {
-		t.Errorf("Expected \n%s \nbut got \n%s", uint32MatrixToString(expected), uint32MatrixToString(subkeys))
+	if !Uint32MatrixEqual(expected, subkeys) {
+		t.Errorf("Expected \n%s \nbut got \n%s", Uint32MatrixToString(expected), Uint32MatrixToString(subkeys))
 	}
 }
 
@@ -181,7 +138,7 @@ func TestSubBytes(t *testing.T) {
 		0xb8b45de5,
 		0x1e415230,
 	}
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -200,7 +157,7 @@ func TestInvSubBytes(t *testing.T) {
 		0x9ac68d2a,
 		0xe9f84808,
 	}
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -227,7 +184,7 @@ func TestColumnToRows(t *testing.T) {
 		0x30313233,
 	}
 	result := columnsToRows(state)
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -254,7 +211,7 @@ func TestRowsToColumns(t *testing.T) {
 		0x03132333,
 	}
 	result := rowsToColumns(stateAsRows)
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -290,7 +247,7 @@ func TestShiftRows(t *testing.T) {
 		0x03102132,
 	}
 	result := shiftRows(state)
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -326,7 +283,7 @@ func TestInvShiftRows(t *testing.T) {
 		0x03122130,
 	}
 	result := invShiftRows(state)
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -362,7 +319,7 @@ func TestShiftRowsAES(t *testing.T) {
 		0x1e2798e5,
 	}
 	result := shiftRows(state)
-	if !uint32SlicesEqual(expected, result) {
+	if !Uint32SlicesEqual(expected, result) {
 		t.Errorf("Expected \n%s \nbut got \n%s", Uint32SliceToString(expected), Uint32SliceToString(result))
 	}
 }
@@ -448,7 +405,7 @@ func TestAddRoundKey(t *testing.T) {
 	}
 	for i := 0; i < len(states); i++ {
 		out := addRoundKey(states[i], keys[i])
-		if !uint32SlicesEqual(out, expected[i]) {
+		if !Uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("AddRoundKey expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}
 	}
@@ -491,7 +448,7 @@ func TestMixColumns(t *testing.T) {
 	}
 	for i := 0; i < len(states); i++ {
 		out := mixColumns(states[i])
-		if !uint32SlicesEqual(out, expected[i]) {
+		if !Uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("MixColumns expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}
 	}
@@ -528,7 +485,7 @@ func TestInvMixColumns(t *testing.T) {
 	}
 	for i := 0; i < len(states); i++ {
 		out := invMixColumns(states[i])
-		if !uint32SlicesEqual(out, expected[i]) {
+		if !Uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("MixColumns expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}
 	}
@@ -555,7 +512,7 @@ func TestEncryptRound(t *testing.T) {
 		0x1e415230,
 	}
 	afterSubBytes := subBytes(state)
-	if !uint32SlicesEqual(expectedAfterSubBytes, afterSubBytes) {
+	if !Uint32SlicesEqual(expectedAfterSubBytes, afterSubBytes) {
 		t.Errorf("After SubBytes expected \n%s but got \n%s", Uint32SliceToString(expectedAfterSubBytes), Uint32SliceToString(afterSubBytes))
 	}
 
@@ -572,7 +529,7 @@ func TestEncryptRound(t *testing.T) {
 		0x1e2798e5,
 	}
 	afterShiftRows := shiftRows(afterSubBytes)
-	if !uint32SlicesEqual(expectedAfterShiftRows, afterShiftRows) {
+	if !Uint32SlicesEqual(expectedAfterShiftRows, afterShiftRows) {
 		t.Errorf("After ShiftRows expected \n%s but got \n%s", Uint32SliceToString(expectedAfterShiftRows), Uint32SliceToString(afterShiftRows))
 	}
 
@@ -583,7 +540,7 @@ func TestEncryptRound(t *testing.T) {
 		0x2806264c,
 	}
 	afterMixColumns := mixColumns(afterShiftRows)
-	if !uint32SlicesEqual(expectedAfterMixColumns, afterMixColumns) {
+	if !Uint32SlicesEqual(expectedAfterMixColumns, afterMixColumns) {
 		t.Errorf("After MixColumns expected \n%s but got \n%s", Uint32SliceToString(expectedAfterMixColumns), Uint32SliceToString(afterMixColumns))
 	}
 
@@ -613,7 +570,7 @@ func TestEncryptRound(t *testing.T) {
 		0x026a5049,
 	}
 	afterRoundKey := addRoundKey(afterMixColumns, key)
-	if !uint32SlicesEqual(afterRoundKey, expectedAfterRoundKey) {
+	if !Uint32SlicesEqual(afterRoundKey, expectedAfterRoundKey) {
 		t.Errorf("After AddRoundKey expected \n%s but got \n%s", Uint32SliceToString(expectedAfterRoundKey), Uint32SliceToString(afterRoundKey))
 	}
 }
@@ -642,7 +599,7 @@ func TestDecryptRound(t *testing.T) {
 	}
 
 	resInvSubBytes := invSubBytes(state)
-	if !uint32SlicesEqual(expInvSubBytes, resInvSubBytes) {
+	if !Uint32SlicesEqual(expInvSubBytes, resInvSubBytes) {
 		t.Errorf("After InvSubBytes expected \n%s but got \n%s", Uint32SliceToString(expInvSubBytes), Uint32SliceToString(resInvSubBytes))
 	}
 
@@ -653,7 +610,7 @@ func TestDecryptRound(t *testing.T) {
 		0x8b10b689,
 	}
 	resInvShiftRows := invShiftRows(resInvSubBytes)
-	if !uint32SlicesEqual(expInvShiftRows, resInvShiftRows) {
+	if !Uint32SlicesEqual(expInvShiftRows, resInvShiftRows) {
 		t.Errorf("After InvShiftRows expected \n%s but got \n%s", Uint32SliceToString(expInvShiftRows), Uint32SliceToString(resInvShiftRows))
 	}
 
@@ -664,7 +621,7 @@ func TestDecryptRound(t *testing.T) {
 		0xa1e6cf2c,
 	}
 	resInvMixColumns := invMixColumns(resInvShiftRows)
-	if !uint32SlicesEqual(expInvMixColumns, resInvMixColumns) {
+	if !Uint32SlicesEqual(expInvMixColumns, resInvMixColumns) {
 		t.Errorf("After InvMixColumns expected \n%s but got \n%s", Uint32SliceToString(expInvMixColumns), Uint32SliceToString(resInvMixColumns))
 	}
 
@@ -675,7 +632,7 @@ func TestDecryptRound(t *testing.T) {
 		0xa111702f,
 	}
 	resAddKey := addRoundKey(resInvMixColumns, roundKey)
-	if !uint32SlicesEqual(expAddKey, resAddKey) {
+	if !Uint32SlicesEqual(expAddKey, resAddKey) {
 		t.Errorf("After AddRoundKey expected \n%s but got \n%s", Uint32SliceToString(expAddKey), Uint32SliceToString(resAddKey))
 	}
 }
@@ -688,6 +645,12 @@ func TestEncryptBlock(t *testing.T) {
 			0x313198a2,
 			0xe0370734,
 		},
+		{
+			0x00000000,
+			0x00000000,
+			0x00000000,
+			0x00000000,
+		},
 	}
 	keys := [][]uint32{
 		{
@@ -695,6 +658,12 @@ func TestEncryptBlock(t *testing.T) {
 			0x28aed2a6,
 			0xabf71588,
 			0x09cf4f3c,
+		},
+		{
+			0x00000000,
+			0x00000000,
+			0x00000000,
+			0x00000000,
 		},
 	}
 	expected := [][]uint32{
@@ -704,10 +673,16 @@ func TestEncryptBlock(t *testing.T) {
 			0xdc118597,
 			0x196a0b32,
 		},
+		{
+			0x66e94bd4,
+			0xef8a2c3b,
+			0x884cfa59,
+			0xca342b2e,
+		},
 	}
 	for i := 0; i < len(plaintext); i++ {
-		out := encryptBlock(plaintext[i], keys[i], 4, 10)
-		if !uint32SlicesEqual(out, expected[i]) {
+		out := EncryptBlock(plaintext[i], keys[i], 4, 10)
+		if !Uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("EncryptBlock expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}
 	}
@@ -721,6 +696,12 @@ func TestDecryptBlock(t *testing.T) {
 			0xdc118597,
 			0x196a0b32,
 		},
+		{
+			0x66e94bd4,
+			0xef8a2c3b,
+			0x884cfa59,
+			0xca342b2e,
+		},
 	}
 	keys := [][]uint32{
 		{
@@ -728,6 +709,12 @@ func TestDecryptBlock(t *testing.T) {
 			0x28aed2a6,
 			0xabf71588,
 			0x09cf4f3c,
+		},
+		{
+			0x00000000,
+			0x00000000,
+			0x00000000,
+			0x00000000,
 		},
 	}
 	expected := [][]uint32{
@@ -737,10 +724,16 @@ func TestDecryptBlock(t *testing.T) {
 			0x313198a2,
 			0xe0370734,
 		},
+		{
+			0x00000000,
+			0x00000000,
+			0x00000000,
+			0x00000000,
+		},
 	}
 	for i := 0; i < len(ciphertext); i++ {
 		out := DecryptBlock(ciphertext[i], keys[i], 4, 10)
-		if !uint32SlicesEqual(out, expected[i]) {
+		if !Uint32SlicesEqual(out, expected[i]) {
 			t.Errorf("DecryptBlock expected \n%s but got \n%s", Uint32SliceToString(expected[i]), Uint32SliceToString(out))
 		}
 	}

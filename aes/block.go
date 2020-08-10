@@ -224,11 +224,11 @@ func addRoundKey(state []uint32, key []uint32) []uint32 {
 	return out
 }
 
-// encryptBlock encrypts a 128-bit block with the AES algorithm
+// EncryptBlock encrypts a 128-bit block with the AES algorithm
 // This implementation is as close to the specification as possible but
 // there are better implementations in terms of speed and readability
 // Check out https://golang.org/src/crypto/aes/block.go
-func encryptBlock(plaintext []uint32, key []uint32, Nk int, Nr int) []uint32 {
+func EncryptBlock(plaintext []uint32, key []uint32, Nk int, Nr int) []uint32 {
 	roundKeys, _ := keyExpansion(Nk, Nr, key)
 
 	// Init

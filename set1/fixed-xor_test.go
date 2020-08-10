@@ -1,20 +1,9 @@
 package set1
 
-import "testing"
-
-func byteArraysEqual(a []byte, b []byte) bool {
-	// Test the equality
-	if len(a) != len(b) {
-		return false
-	}
-	equal := true
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			equal = false
-		}
-	}
-	return equal
-}
+import (
+	. "cryptopals/utils"
+	"testing"
+)
 
 // TestXOROneByte 00001111 xor 00111100 == 00110011
 func TestXOROneByte(t *testing.T) {
@@ -24,7 +13,7 @@ func TestXOROneByte(t *testing.T) {
 	ans, _ := XOR(a, b)
 
 	// Test the equality
-	if !byteArraysEqual(ans, expected) {
+	if !ByteArraysEqual(ans, expected) {
 		t.Errorf("%x xor %x = %x ; Expected %x", a, b, ans, expected)
 	}
 }
@@ -37,7 +26,7 @@ func TestXORTwoBytes(t *testing.T) {
 	ans, _ := XOR(a, b)
 
 	// Test the equality
-	if !byteArraysEqual(ans, expected) {
+	if !ByteArraysEqual(ans, expected) {
 		t.Errorf("%x xor %x = %x ; Expected %x", a, b, ans, expected)
 	}
 }

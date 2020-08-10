@@ -1,6 +1,9 @@
 package set1
 
-import "testing"
+import (
+	. "cryptopals/utils"
+	"testing"
+)
 
 // TestRepeatingXOROneByte 00001111 xor 00111100 == 00110011
 func TestRepeatingXOROneByte(t *testing.T) {
@@ -10,7 +13,7 @@ func TestRepeatingXOROneByte(t *testing.T) {
 	ans := RepeatingXOR(key, plaintext)
 
 	// Test the equality
-	if !byteArraysEqual(ans, expected) {
+	if !ByteArraysEqual(ans, expected) {
 		t.Errorf("Key: %x xor Data: %x = %x ; Expected %x", key, plaintext, ans, expected)
 	}
 }
@@ -25,7 +28,7 @@ func TestRepeatingXORTwoBytes(t *testing.T) {
 	ans := RepeatingXOR(key, plaintext)
 
 	// Test the equality
-	if !byteArraysEqual(ans, expected) {
+	if !ByteArraysEqual(ans, expected) {
 		t.Errorf("Key: %x xor Data: %x = %x ; Expected %x", key, plaintext, ans, expected)
 	}
 }
