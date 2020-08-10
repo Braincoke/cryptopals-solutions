@@ -13,7 +13,7 @@ func TestRepeatingXOROneByte(t *testing.T) {
 	ans := RepeatingXOR(key, plaintext)
 
 	// Test the equality
-	if !ByteArraysEqual(ans, expected) {
+	if !ByteSlicesEqual(ans, expected) {
 		t.Errorf("Key: %x xor Data: %x = %x ; Expected %x", key, plaintext, ans, expected)
 	}
 }
@@ -28,7 +28,7 @@ func TestRepeatingXORTwoBytes(t *testing.T) {
 	ans := RepeatingXOR(key, plaintext)
 
 	// Test the equality
-	if !ByteArraysEqual(ans, expected) {
+	if !ByteSlicesEqual(ans, expected) {
 		t.Errorf("Key: %x xor Data: %x = %x ; Expected %x", key, plaintext, ans, expected)
 	}
 }

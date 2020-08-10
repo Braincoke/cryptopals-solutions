@@ -15,7 +15,7 @@ func TestBtoU(t *testing.T) {
 		0x10111213,
 		0x14151617,
 	}
-	uArray := ByteArrayToUint32Array(bArray)
+	uArray := ByteToUintSlice(bArray)
 	if !Uint32SlicesEqual(uArray, expected) {
 		t.Errorf("Expected \n%s but got \n%s", Uint32SliceToString(expected), Uint32SliceToString(uArray))
 	}
@@ -35,8 +35,8 @@ func TestUtoB(t *testing.T) {
 		0x10111213,
 		0x14151617,
 	}
-	bArray := Uint32ArrayToByteArray(uArray)
-	if !ByteArraysEqual(bArray, expected) {
+	bArray := UintToByteSlice(uArray)
+	if !ByteSlicesEqual(bArray, expected) {
 		t.Errorf("Expected \n%q but got \n%q", expected, bArray)
 	}
 }

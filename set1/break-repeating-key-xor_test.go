@@ -23,8 +23,8 @@ func TestSplitBytesSimple(t *testing.T) {
 		{20, 21, 22, 23},
 		{30, 31, 32, 33},
 	}
-	if !Slices2DEqual(split, expected) {
-		t.Errorf("Expected array \n%s but got \n%s", Slices2DToString(expected), Slices2DToString(split))
+	if !ByteMatrixEqual(split, expected) {
+		t.Errorf("Expected array \n%s but got \n%s", ByteMatrixToString(expected), ByteMatrixToString(split))
 	}
 }
 
@@ -36,8 +36,8 @@ func TestSplitBytesUnbanlaced(t *testing.T) {
 		{20, 21, 22},
 		{30, 31, 32},
 	}
-	if !Slices2DEqual(split, expected) {
-		t.Errorf("Expected array \n%s but got \n%s", Slices2DToString(expected), Slices2DToString(split))
+	if !ByteMatrixEqual(split, expected) {
+		t.Errorf("Expected array \n%s but got \n%s", ByteMatrixToString(expected), ByteMatrixToString(split))
 	}
 }
 

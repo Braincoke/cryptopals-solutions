@@ -13,7 +13,7 @@ func TestXOROneByte(t *testing.T) {
 	ans, _ := XOR(a, b)
 
 	// Test the equality
-	if !ByteArraysEqual(ans, expected) {
+	if !ByteSlicesEqual(ans, expected) {
 		t.Errorf("%x xor %x = %x ; Expected %x", a, b, ans, expected)
 	}
 }
@@ -26,7 +26,7 @@ func TestXORTwoBytes(t *testing.T) {
 	ans, _ := XOR(a, b)
 
 	// Test the equality
-	if !ByteArraysEqual(ans, expected) {
+	if !ByteSlicesEqual(ans, expected) {
 		t.Errorf("%x xor %x = %x ; Expected %x", a, b, ans, expected)
 	}
 }

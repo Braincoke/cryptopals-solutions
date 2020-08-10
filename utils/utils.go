@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// ByteArraysEqual tests if two byte arrays are equal
-func ByteArraysEqual(a []byte, b []byte) bool {
+// ByteSlicesEqual tests if two byte arrays are equal
+func ByteSlicesEqual(a []byte, b []byte) bool {
 	// Test the equality
 	if len(a) != len(b) {
 		return false
@@ -68,8 +68,8 @@ func Uint32MatrixToString(a [][]uint32) string {
 	return result.String()
 }
 
-// Slices2DToString prints a double slice of byte
-func Slices2DToString(a [][]byte) string {
+// ByteMatrixToString prints a double slice of byte
+func ByteMatrixToString(a [][]byte) string {
 	var result strings.Builder
 	result.WriteRune('[')
 	for _, subA := range a {
@@ -83,8 +83,8 @@ func Slices2DToString(a [][]byte) string {
 	return result.String()
 }
 
-// Slices2DEqual tests if two double slice of byte are equal
-func Slices2DEqual(a [][]byte, b [][]byte) bool {
+// ByteMatrixEqual tests if two double slice of byte are equal
+func ByteMatrixEqual(a [][]byte, b [][]byte) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -143,8 +143,8 @@ func XORUint32(a []uint32, b []uint32) []uint32 {
 	return result
 }
 
-// ByteArrayToUint32Array converts a byte array to a uint32 array
-func ByteArrayToUint32Array(byteArray []byte) []uint32 {
+// ByteToUintSlice converts a byte array to a uint32 array
+func ByteToUintSlice(byteArray []byte) []uint32 {
 	uintArray := make([]uint32, len(byteArray)/4)
 	for i := 0; i < len(uintArray); i++ {
 		uintArray[i] = binary.BigEndian.Uint32(byteArray[i*4 : i*4+4])
@@ -152,8 +152,8 @@ func ByteArrayToUint32Array(byteArray []byte) []uint32 {
 	return uintArray
 }
 
-// Uint32ArrayToByteArray converts a uint32 array to a byte array
-func Uint32ArrayToByteArray(uintArray []uint32) []byte {
+// UintToByteSlice converts a uint32 array to a byte array
+func UintToByteSlice(uintArray []uint32) []byte {
 	byteArray := make([]byte, 0)
 	for i := 0; i < len(uintArray); i++ {
 		uintBytes := make([]byte, 4)
