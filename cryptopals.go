@@ -3,6 +3,7 @@ package main
 import (
 	"cryptopals/set1"
 	"cryptopals/set2"
+	"encoding/base64"
 	"encoding/binary"
 	"fmt"
 	"os"
@@ -191,6 +192,29 @@ func main() {
 			}
 		}
 		fmt.Printf("Out of %d guesses, %d were correct\n", totalGuess, correctGuess)
+	case 12:
+		fmt.Println("### Set 2 - Challenge 12 ###")
+		unknownStringB64 := "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
+		unknownString, _ := base64.StdEncoding.DecodeString(unknownStringB64)
+
+		// Detect block size
+		blockSize := set2.DetectBlockSize()
+		fmt.Printf("Detected a block size of %d bytes\n", blockSize)
+
+		fmt.Println("Decrypting the unknown string...")
+		decryptedBytes := make([]byte, 0)
+		for i := 0; i < len(unknownString); i++ {
+			decryptedByte, err := set2.DecryptByte(i, decryptedBytes, blockSize)
+			if err != nil {
+				fmt.Println("Error when cracking the byte")
+			}
+			if decryptedByte != unknownString[i] {
+				fmt.Printf("Expected to decrypt byte %q but decrypted %q\n", unknownString[i], decryptedByte)
+			}
+			decryptedBytes = append(decryptedBytes, decryptedByte)
+		}
+		fmt.Println("------------------------------------------------------------------")
+		fmt.Print(string(decryptedBytes))
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
