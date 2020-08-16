@@ -2,6 +2,7 @@ package main
 
 import (
 	"cryptopals/set1"
+	"cryptopals/set2"
 	"encoding/binary"
 	"fmt"
 	"os"
@@ -128,6 +129,12 @@ func main() {
 		for _, cipher := range cipherlines {
 			fmt.Println(cipher)
 		}
+	case 9:
+		fmt.Println("### Set 2 - Challenge 9 ###")
+		input := []byte("YELLOW SUBMARINE")
+		var blockSize byte = 20
+		paddedBlock, _ := set2.PadBlockPKCS7(input, blockSize)
+		fmt.Printf("%q\n", paddedBlock)
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
