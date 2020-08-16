@@ -11,7 +11,7 @@ import (
 
 /**
  * Cryptopal challenges
- * https://cryptopals.com/sets/1/
+ * https://cryptopals.com/sets/
  */
 
 func main() {
@@ -129,6 +129,10 @@ func main() {
 		for _, cipher := range cipherlines {
 			fmt.Println(cipher)
 		}
+	/**
+	 * Cryptopals set 2
+	 * https://cryptopals.com/sets/2/
+	 */
 	case 9:
 		fmt.Println("### Set 2 - Challenge 9 ###")
 		input := []byte("YELLOW SUBMARINE")
@@ -144,6 +148,49 @@ func main() {
 		ciphertext, _ := set1.ReadBase64File("./set2/challenge10-data.txt")
 		plaintext := set2.DecryptCBC(ciphertext, iv, key, Nk, Nr)
 		fmt.Print(string(plaintext))
+	case 11:
+		fmt.Println("### Set 2 - Challenge 11 ###")
+		// Note that this plaintext helps a lot in the detection
+		// since are almost guaranteed to have repeating blocks
+		plaintext := []byte(`
+		Blackbird singing in the dead of night
+		Take these broken wings and learn to fly
+		All your life
+		You were only waiting for this moment to arise
+
+		Blackbird singing in the dead of night
+		Take these sunken eyes and learn to see
+		All your life
+		You were only waiting for this moment to be free
+
+		Black bird fly, black bird fly
+		Into the light of the dark black night
+
+		Black bird fly, black bird fly
+		Into the light of the dark black night
+
+		Blackbird singing in the dead of night
+		Take these broken wings and learn to fly
+		All your life
+		You were only waiting for this moment to arise
+		You were only waiting for this moment to arise
+		You were only waiting for this moment to arise`)
+		totalGuess := 200
+		correctGuess := 0
+		for i := 0; i < totalGuess; i++ {
+			ciphertext, mode := set2.EncryptData(plaintext)
+			isECB, _ := set1.DetectECB(ciphertext)
+			var detectedMode string
+			if isECB {
+				detectedMode = "ECB"
+			} else {
+				detectedMode = "CBC"
+			}
+			if detectedMode == mode {
+				correctGuess++
+			}
+		}
+		fmt.Printf("Out of %d guesses, %d were correct\n", totalGuess, correctGuess)
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
