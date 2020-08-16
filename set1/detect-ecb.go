@@ -2,6 +2,7 @@ package set1
 
 import (
 	"bufio"
+	"encoding/hex"
 	"os"
 )
 
@@ -9,13 +10,14 @@ import (
 // the ciphertext should be a hex string
 func DetectECB(ciphertext []byte) (detected bool, count map[string]int) {
 	// Split the ciphertext in blocks of 128 bits
-	blocks := make([]string, len(ciphertext)/32)
+	blockSize := 16
+	blocks := make([]string, len(ciphertext)/blockSize)
 	j := 0
 	for i := 0; i < len(ciphertext); {
-		block := string(ciphertext[i : i+32])
+		block := hex.EncodeToString(ciphertext[i : i+blockSize])
 		blocks[j] = block
 		j++
-		i += 32
+		i += blockSize
 	}
 	duplicates := 0
 	count = make(map[string]int)
@@ -25,7 +27,7 @@ func DetectECB(ciphertext []byte) (detected bool, count map[string]int) {
 		}
 		count[b]++
 	}
-	return (duplicates > 1), count
+	return (duplicates >= 1), count
 }
 
 // ReadFileLines reads each line of a file
