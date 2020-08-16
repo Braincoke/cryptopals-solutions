@@ -135,6 +135,15 @@ func main() {
 		var blockSize byte = 20
 		paddedBlock, _ := set2.PadBlockPKCS7(input, blockSize)
 		fmt.Printf("%q\n", paddedBlock)
+	case 10:
+		fmt.Println("### Set 2 - Challenge 10 ###")
+		Nk := 4
+		Nr := 10
+		iv := make([]byte, 16)
+		key := []byte("YELLOW SUBMARINE")
+		ciphertext, _ := set1.ReadBase64File("./set2/challenge10-data.txt")
+		plaintext := set2.DecryptCBC(ciphertext, iv, key, Nk, Nr)
+		fmt.Print(string(plaintext))
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
