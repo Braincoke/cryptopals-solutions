@@ -3,6 +3,10 @@
 This repository contains the solutions for the [Cryptopals crypto challenges](https://cryptopals.com).
 Each package contains the solutions to one set of challenges. You can look through the commits to see the incremental solutions to each challenge.
 
+## Solutions explanation
+
+I have written write-ups for the challenges I found the most interesting on my [blog](https://braincoke.fr/write-up/Cryptopals), check them out !
+
 ## Running the solutions
 
 New challenges might requires the solutions you built previously.
