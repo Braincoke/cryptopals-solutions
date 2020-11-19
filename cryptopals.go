@@ -215,6 +215,25 @@ func main() {
 		}
 		fmt.Println("------------------------------------------------------------------")
 		fmt.Print(string(decryptedBytes))
+	case 13:
+		fmt.Println("### Set 2 - Challenge 13 ###")
+		fmt.Println("Check out the full explanation at https://braincoke.fr/write-up/cryptopals/cryptopals-ecb-cut-and-paste/")
+		fmt.Println("Getting ciphertext ci for profile 'what@ever.com'...")
+		ci := set2.EncryptProfile("what@ever.com")
+		payload := "what@ever.admin\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
+		fmt.Printf("Getting the ciphertext ct for the payload = '%q'\n", payload)
+		ct := set2.EncryptProfile(payload)
+		fmt.Println("Crafting the final ciphertext c = [ci[0], ci[1], ct[2]]")
+		c := make([]byte, 16*3)
+		for i := 0; i < 16*2; i++ {
+			c[i] = ci[i]
+		}
+		for i := 16; i < 16*2; i++ {
+			c[i+16] = ct[i]
+		}
+		fmt.Println("Decrypting c for verification:")
+		p := set2.DecryptProfile(c)
+		fmt.Printf("Role = %s\n", p.Role)
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
