@@ -198,7 +198,7 @@ func main() {
 		unknownString, _ := base64.StdEncoding.DecodeString(unknownStringB64)
 
 		// Detect block size
-		blockSize := set2.DetectBlockSize()
+		blockSize := set2.DetectBlockSize(set2.Challenge12Oracle)
 		fmt.Printf("Detected a block size of %d bytes\n", blockSize)
 
 		fmt.Println("Decrypting the unknown string...")

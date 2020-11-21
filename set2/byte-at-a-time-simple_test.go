@@ -12,7 +12,7 @@ func TestDecryptByte(t *testing.T) {
 }
 
 func TestDetectBlockSize(t *testing.T) {
-	fmt.Printf("Block size %d\n", DetectBlockSize())
+	fmt.Printf("Block size %d\n", DetectBlockSize(Challenge12Oracle))
 }
 
 func TestDecryptUnknownStringSimple(t *testing.T) {
@@ -20,7 +20,7 @@ func TestDecryptUnknownStringSimple(t *testing.T) {
 	unknownString, _ := base64.StdEncoding.DecodeString(unknownStringB64)
 
 	// Detect block size
-	blockSize := DetectBlockSize()
+	blockSize := DetectBlockSize(Challenge12Oracle)
 
 	decryptedBytes := make([]byte, 0)
 	for i := 0; i < len(unknownString); i++ {

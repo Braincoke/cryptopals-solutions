@@ -7,6 +7,8 @@ import (
 	"errors"
 )
 
+type oracleFunction func([]byte) []byte
+
 // Challenge12Oracle implements the Oracle defined in Challenge 12
 func Challenge12Oracle(chosenString []byte) []byte {
 	unknownStringB64 := "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
@@ -22,8 +24,8 @@ func Challenge12Oracle(chosenString []byte) []byte {
 }
 
 // DetectBlockSize finds the block size of the cipher used in the Oracle
-func DetectBlockSize() int {
-	initialCiphertext := Challenge12Oracle([]byte("A"))
+func DetectBlockSize(oracle oracleFunction) int {
+	initialCiphertext := oracle([]byte("A"))
 	initialLenght := len(initialCiphertext)
 	blockLength := 0
 	for i := 2; i < 6000 && blockLength == 0; i++ {
@@ -31,7 +33,7 @@ func DetectBlockSize() int {
 		for j := 0; j < i; j++ {
 			chosenString[j] = byte('A')
 		}
-		ciphertext := Challenge12Oracle(chosenString)
+		ciphertext := oracle(chosenString)
 		if len(ciphertext) > initialLenght {
 			blockLength = len(ciphertext) - initialLenght
 		}
