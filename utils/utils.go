@@ -162,3 +162,12 @@ func UintToByteSlice(uintArray []uint32) []byte {
 	}
 	return byteArray
 }
+
+// MinInt finds the minimum between two int
+// Really I don't see why I have to code this...
+func MinInt(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}

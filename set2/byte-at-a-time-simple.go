@@ -5,6 +5,7 @@ import (
 	"cryptopals/utils"
 	"encoding/base64"
 	"errors"
+	"strings"
 )
 
 type oracleFunction func([]byte) []byte
@@ -29,10 +30,7 @@ func DetectBlockSize(oracle oracleFunction) int {
 	initialLenght := len(initialCiphertext)
 	blockLength := 0
 	for i := 2; i < 6000 && blockLength == 0; i++ {
-		chosenString := make([]byte, i)
-		for j := 0; j < i; j++ {
-			chosenString[j] = byte('A')
-		}
+		chosenString := []byte(strings.Repeat("A", i))
 		ciphertext := oracle(chosenString)
 		if len(ciphertext) > initialLenght {
 			blockLength = len(ciphertext) - initialLenght
@@ -58,10 +56,7 @@ func DecryptByte(position int, knownBytes []byte, blockSize int) (decryptedByte 
 	// BLOCK 0 => A   A   A   ... s0  s1  s2   s3
 	// BLOCK 1 => s4  s5  s6  ... s16 s17 s18  s19
 	// BLOCK 2 => s20 s21 s22 ... s32 s33 s34 [s35]
-	chosenString := make([]byte, fillerLength)
-	for i := 0; i < len(chosenString); i++ {
-		chosenString[i] = 'A'
-	}
+	chosenString := []byte(strings.Repeat("A", fillerLength))
 	ciphertext := Challenge12Oracle(chosenString)
 
 	// Block that will be brute forced
