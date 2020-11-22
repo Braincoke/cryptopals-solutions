@@ -234,6 +234,33 @@ func main() {
 		fmt.Println("Decrypting c for verification:")
 		p := set2.DecryptProfile(c)
 		fmt.Printf("Role = %s\n", p.Role)
+	case 14:
+		fmt.Println("### Set 2 - Challenge 14 ###")
+		unknownStringB64 := "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
+		unknownString, _ := base64.StdEncoding.DecodeString(unknownStringB64)
+
+		oracle := set2.Challenge14Oracle
+		// Detect block size
+		blockSize := set2.DetectBlockSize(oracle)
+		fmt.Printf("Detected a block size of %d bytes\n", blockSize)
+		// Detect prefix length
+		prefixLength := set2.DetectPrefixLength14(blockSize, oracle)
+		fmt.Printf("Detected a prefix size of %d bytes\n", prefixLength)
+
+		fmt.Println("Decrypting the unknown string...")
+		decryptedBytes := make([]byte, 0)
+		for i := 0; i < len(unknownString); i++ {
+			decryptedByte, err := set2.DecryptByte14(prefixLength, i, decryptedBytes, blockSize, oracle)
+			if err != nil {
+				fmt.Println("Error when cracking the byte")
+			}
+			if decryptedByte != unknownString[i] {
+				fmt.Printf("Expected to decrypt byte %q but decrypted %q\n", unknownString[i], decryptedByte)
+			}
+			decryptedBytes = append(decryptedBytes, decryptedByte)
+		}
+		fmt.Println("------------------------------------------------------------------")
+		fmt.Print(string(decryptedBytes))
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
