@@ -40,7 +40,22 @@ func PadPCKS7(array []byte, blockSize byte) (paddedArray []byte) {
 }
 
 // UnpadPKCS7 will remove the PKCS7 padding from an array
-func UnpadPKCS7(array []byte) []byte {
+func UnpadPKCS7(array []byte) ([]byte, error) {
+	if !ValidatePKCS7(array) {
+		return nil, errors.New("Incorrect padding detected")
+	}
 	padding := int(array[len(array)-1])
-	return array[:len(array)-padding]
+	return array[:len(array)-padding], nil
+}
+
+// ValidatePKCS7 will verify if the PKCS#7 padding is valid
+func ValidatePKCS7(array []byte) bool {
+	paddingByte := array[len(array)-1]
+	paddingLength := int(paddingByte)
+	for i := 1; i <= paddingLength; i++ {
+		if array[len(array)-i] != paddingByte {
+			return false
+		}
+	}
+	return true
 }

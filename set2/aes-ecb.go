@@ -19,7 +19,8 @@ func DecryptECB(ciphertext []byte, key []byte, Nk int, Nr int) []byte {
 		}
 		i += Nb
 	}
-	return UnpadPKCS7(utils.UintToByteSlice(pBlocks))
+	unpaddedString, _ := UnpadPKCS7(utils.UintToByteSlice(pBlocks))
+	return unpaddedString
 }
 
 // EncryptECB will encrypt a plaintext with AES in ECB mode

@@ -99,11 +99,49 @@ func TestPKCS7Multiple(t *testing.T) {
 }
 
 func TestPKCS7Unpad(t *testing.T) {
-	input := []byte("YELLOW SUBMARINE")
-	var blockSize byte = 4
-	paddedArray := PadPCKS7(input, blockSize)
-	unpaddedArray := UnpadPKCS7(paddedArray)
-	if !ByteSlicesEqual(input, unpaddedArray) {
-		t.Errorf("Expected %q but got %q", input, unpaddedArray)
+	expectedString := [][]byte{
+		[]byte("ICE ICE BABY"),
+	}
+	validPadding := [][]byte{
+		[]byte("ICE ICE BABY\x04\x04\x04\x04"),
+	}
+	invalidPadding := [][]byte{
+		[]byte("ICE ICE BABY\x05\x05\x05\x05"),
+		[]byte("ICE ICE BABY\x01\x02\x03\x04"),
+	}
+	for i := 0; i < len(validPadding); i++ {
+		unpaddedArray, err := UnpadPKCS7(validPadding[i])
+		if err != nil {
+			t.Errorf("Padded string %q should have been found as valid PKCS#7 but did not", validPadding[i])
+		}
+		if !ByteSlicesEqual(unpaddedArray, expectedString[i]) {
+			t.Errorf("Expected %q but got %q", expectedString[i], unpaddedArray)
+		}
+	}
+	for i := 0; i < len(invalidPadding); i++ {
+		_, err := UnpadPKCS7(invalidPadding[i])
+		if err == nil {
+			t.Errorf("Padded string %q should have been found as invalid PKCS#7 but did not", invalidPadding[i])
+		}
+	}
+}
+
+func TestPKCS7Validation(t *testing.T) {
+	validPadding := [][]byte{
+		[]byte("ICE ICE BABY\x04\x04\x04\x04"),
+	}
+	invalidPadding := [][]byte{
+		[]byte("ICE ICE BABY\x05\x05\x05\x05"),
+		[]byte("ICE ICE BABY\x01\x02\x03\x04"),
+	}
+	for i := 0; i < len(validPadding); i++ {
+		if !ValidatePKCS7(validPadding[i]) {
+			t.Errorf("Padded string %q should have been found as valid PKCS#7 but did not", validPadding[i])
+		}
+	}
+	for i := 0; i < len(invalidPadding); i++ {
+		if ValidatePKCS7(invalidPadding[i]) {
+			t.Errorf("Padded string %q should have been found as invalid PKCS#7 but did not", invalidPadding[i])
+		}
 	}
 }
