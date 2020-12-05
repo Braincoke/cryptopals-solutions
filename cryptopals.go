@@ -261,6 +261,28 @@ func main() {
 		}
 		fmt.Println("------------------------------------------------------------------")
 		fmt.Print(string(decryptedBytes))
+	case 15:
+		fmt.Println("### Set 2 - Challenge 15 ###")
+		fmt.Println("See the implementation directly for this challenge")
+	case 16:
+		fmt.Println("### Set 2 - Challenge 16 ###")
+		input := []byte("YELLOW_SUBMARINE_DETROIT_TORINO_etcetera")
+		c, iv := set2.Challenge16EncryptionOracle(input)
+		// First plaintext block
+		p1 := []byte("comment1=cooking")
+		fmt.Printf("-- First plaintext block is always '%s'.\n", string(p1))
+		// i1 = p1 ^ c0
+		i1, _ := set1.XOR([]byte(p1), iv)
+		fmt.Printf("-- Intermediate value i1 = Decrypt(C1) = P1 xor IV is '%x'.\n", string(i1))
+		// What we whish p1 to be equal to
+		targetp1 := []byte(";admin=true;1234")
+		fmt.Printf("-- We want P1 to be equal to '%s' after the decryption.\n", string(targetp1))
+		// What the iv should be to have this plaintext
+		craftedIV, _ := set1.XOR(targetp1, i1)
+		fmt.Printf("-- We craft a new IV = targetP1 xor I1 = %x.\n", string(craftedIV))
+		// craftedIV := iv
+		fmt.Println("Testing...")
+		fmt.Printf("Admin = %t\n", set2.Challenge16IsAdmin(c, craftedIV))
 	default:
 		fmt.Println(" - Unknown challenge number !!!")
 		os.Exit(4)
